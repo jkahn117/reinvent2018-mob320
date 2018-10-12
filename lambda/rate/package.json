@@ -1,0 +1,8 @@
+{
+  "name": "mob000-appsync-rapid-development-rate-api",
+  "version": "1.0.0",
+  "description": "Sample API to demonstrate machine learning pricing",
+  "main": "app.js",
+  "author": "jkahn@",
+  "license": "MIT"
+}

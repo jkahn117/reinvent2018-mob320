@@ -1,0 +1,396 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  mobXXX-appsync-rapid-development
+
+  Sample project for reInvent 2018 - MOBXXX - 0 to 60 with AWS AppSync -
+  Rapid Development Techniques for Mobile APIs
+    
+Globals:
+  Function:
+    Runtime: nodejs8.10
+    Timeout: 3
+
+Resources:
+  #
+  # AppSync API
+  #
+  ElastiLodgeApi:
+    Type: AWS::AppSync::GraphQLApi
+    Description: Sample GraphQL API for ElastiLodge demo
+    Properties:
+      AuthenticationType: API_KEY
+      Name: ElastiLodgeApi
+
+  ElastiLodgeApiKey:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      Description: API Key for ElastiLodge Api
+
+  ElastiLodgeSchema:
+    Type: AWS::AppSync::GraphQLSchema
+    DependsOn: ElastiLodgeApi
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      DefinitionS3Location: schema.graphql
+
+  ListHotelsQueryResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Query
+      FieldName: listHotels
+      DataSourceName: !GetAtt HotelsRestApiDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2018-05-29",
+          "method": "GET",
+          "resourcePath": "/Prod/hotels",
+          "params": {
+            "query": $util.toJson($ctx.args),
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          },
+        }
+      ResponseMappingTemplate: |
+        #if($ctx.result.statusCode == 200)
+          #set($resp = $utils.parseJson($ctx.result.body))
+          #set($result = [])
+          #foreach($hotel in $resp.hotels)
+            $util.qr($result.add({
+              "hotelId": $hotel['_id'],
+              "name": $hotel.name,
+              "location": $hotel.location,
+              "image": $hotel.image,
+              "address": $hotel.address,
+              "phoneNumber": $hotel.phoneNumber,
+              "categrory": $hotel.category,
+              "amenities": $hotel.amenities
+            }))
+          #end
+          $utils.toJson($result)
+        #else
+          $utils.appendError($ctx.result.body, $ctx.result.statusCode)
+        #end
+  
+  GetHotelQueryResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Query
+      FieldName: getHotel
+      DataSourceName: !GetAtt HotelsRestApiDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2018-05-29",
+          "method": "GET",
+          "resourcePath": "/Prod/hotels/${ctx.args.hotelId}",
+          "params": {
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          },
+        }
+      ResponseMappingTemplate: |
+        #if($ctx.result.statusCode == 200)
+          #set($resp = $utils.parseJson($ctx.result.body))
+          #set($result = {
+            "hotelId": $resp.hotel['_id'],
+            "name": $resp.hotel.name,
+            "location": $resp.hotel.location,
+            "image": $resp.hotel.image,
+            "address": $resp.hotel.address,
+            "phoneNumber": $resp.hotel.phoneNumber,
+            "categrory": $resp.hotel.category,
+            "amenities": $resp.hotel.amenities
+          })
+          $utils.toJson($result)
+        #else
+          $utils.appendError($ctx.result.body, $ctx.result.statusCode)
+        #end
+
+  ## NEW PHASE 3 ##
+  HotelRateFieldResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Hotel
+      FieldName: rate
+      DataSourceName: !GetAtt HotelsRestApiDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2018-05-29",
+          "method": "GET",
+          "resourcePath": "/Prod/rates/${ctx.source.hotelId}",
+          "params": {
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          }
+        }
+      ResponseMappingTemplate: |
+        #if($ctx.result.statusCode == 200)
+          $ctx.result.body
+        #else
+          $utils.appendError($ctx.result.body, $ctx.result.statusCode)
+        #end
+
+  GuestReservationQueryResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Query
+      FieldName: guestReservations
+      DataSourceName: !GetAtt ReservationsTableDataSource.Name
+      RequestMappingTemplate: |
+        #set( $todayString = $util.time.nowISO8601().substring(0, 10) )
+        {
+          "version": "2017-02-28",
+          "operation": "Query",
+          "query": {
+            "expression": "guestId = :gId AND startDate > :startDate",
+            "expressionValues": {
+              ":gId": $util.dynamodb.toDynamoDBJson($ctx.args.guestId),
+              ":startDate": $util.dynamodb.toDynamoDBJson($todayString)
+            }
+          },
+          "index": "guestId-startDate-index"
+        }
+      ResponseMappingTemplate: |
+        $util.toJson($ctx.result.items)
+
+  ## reservation type
+  ReservationHotelFieldResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Reservation
+      FieldName: hotel
+      DataSourceName: !GetAtt HotelsRestApiDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2018-05-29",
+          "method": "GET",
+          "resourcePath": "/Prod/hotels/${ctx.source.hotelId}",
+          "params": {
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          },
+        }
+      ResponseMappingTemplate: |
+        #if($ctx.result.statusCode == 200)
+          #set($resp = $utils.parseJson($ctx.result.body))
+          #set($result = {
+            "hotelId": $resp.hotel['_id'],
+            "name": $resp.hotel.name,
+            "location": $resp.hotel.location,
+            "image": $resp.hotel.image,
+            "address": $resp.hotel.address,
+            "phoneNumber": $resp.hotel.phoneNumber,
+            "categrory": $resp.hotel.category,
+            "amenities": $resp.hotel.amenities
+          })
+          $utils.toJson($result)
+        #else
+          $utils.appendError($ctx.result.body, $ctx.result.statusCode)
+        #end
+
+  ## createReservation(input: ReservationInput): Reservation
+  CreateReservationMutationResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Mutation
+      FieldName: createReservation
+      DataSourceName: !GetAtt ReservationsTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "PutItem",
+          "key" : {
+            "confirmationNumber": $util.dynamodb.toDynamoDBJson($util.autoId()),
+          },
+          "attributeValues" : $util.dynamodb.toMapValuesJson($ctx.args.input)
+        }
+      ResponseMappingTemplate: |
+        $util.toJson($ctx.result)
+
+  ## deleteReservation(confNum: ID!): Reservation
+  DeleteReservationMutationResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Mutation
+      FieldName: deleteReservation
+      DataSourceName: !GetAtt ReservationsTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "DeleteItem",
+          "key" : {
+            "confirmationNumber": $util.dynamodb.toDynamoDBJson($ctx.args.confNum)
+          }
+        }
+      ResponseMappingTemplate: |
+        $util.toJson($ctx.result)
+  
+  #
+  # GraphQL Data Sources
+  #
+  HotelsRestApiDataSource:
+    Type: AWS::AppSync::DataSource
+    DependsOn: ServerlessRestApi
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      Name: ElastiLodge_hotels_rest_api
+      Description: ElastiLodge REST API data source
+      Type: HTTP
+      HttpConfig:
+        Endpoint: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com"
+
+  ReservationsTableDataSource:
+    Type: AWS::AppSync::DataSource
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      Name: ElastiLodge_reservations_table
+      Description: ElastiLodge reservations table data source
+      ServiceRoleArn: !GetAtt AppSyncServiceRole.Arn
+      Type: AMAZON_DYNAMODB
+      DynamoDBConfig:
+        TableName: !Ref ReservationsTable
+        AwsRegion: !Sub ${AWS::Region}
+
+  #
+  # Reservations Database
+  #
+  ReservationsTable:
+    Type: AWS::DynamoDB::Table
+    Description: Prototype reservations table for ElastiLodge API
+    Properties:
+      TableName: elastilodge-reservations
+      AttributeDefinitions:
+        - AttributeName: confirmationNumber
+          AttributeType: S
+        - AttributeName: guestId
+          AttributeType: S
+        - AttributeName: startDate
+          AttributeType: S
+      KeySchema:
+        - AttributeName: confirmationNumber
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      GlobalSecondaryIndexes:
+        - IndexName: guestId-startDate-index
+          KeySchema:
+            - AttributeName: guestId
+              KeyType: HASH
+            - AttributeName: startDate
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - hotelId
+              - confirmationNumber
+              - endDate
+            ProjectionType: INCLUDE
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+
+  #
+  # "Legacy" API
+  #
+  ListHotels:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda/legacy/
+      Handler: app.list
+      Events:
+        ListHotels:
+          Type: Api
+          Properties:
+            Path: /hotels
+            Method: GET
+
+  GetHotel:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda/legacy/
+      Handler: app.get
+      Events:
+        GetHotel:
+          Type: Api
+          Properties:
+            Path: /hotels/{hotelId}
+            Method: GET
+
+  #
+  # "Rate" API - ## NEW PHASE 3 ##
+  #
+  GetRate:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda/rate/
+      Handler: app.get
+      Events:
+        GetRate:
+          Type: Api
+          Properties:
+            Path: /rates/{hotelId}
+            Method: GET
+
+  #
+  # IAM
+  #
+  AppSyncServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - appsync.amazonaws.com
+      Path: '/elastilodge/'
+      Policies:
+        - PolicyName: elastilodge-appsync-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !Join [ "", [ !GetAtt ReservationsTable.Arn, "*" ] ]
+
+Outputs:
+  LegacyApi:
+    Description: "Endpoint for sample legacy API"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hotels/"
+
+  ApiKey:
+    Description: "API Key for ElastiLodge API"
+    Value: !GetAtt ElastiLodgeApiKey.ApiKey
+  
+  GraphQLApi:
+    Description: "Endpoint for GraphQL"
+    Value: !GetAtt ElastiLodgeApi.GraphQLUrl

@@ -1,0 +1,8 @@
+{
+  "name": "mob000-appsync-rapid-development-legacy-api",
+  "version": "1.0.0",
+  "description": "Sample API to demonstrate legacy backend",
+  "main": "legacy/app.js",
+  "author": "jkahn@",
+  "license": "MIT"
+}

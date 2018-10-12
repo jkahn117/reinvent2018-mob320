@@ -1,0 +1,55 @@
+type Hotel {
+  hotelId: ID!
+  name: String!
+  location: String!
+  image: String
+  address: Address!
+  phoneNumber: AWSPhone!
+  category: Int!
+  amenities: [String]
+}
+
+type Address {
+  street: String!
+  city: String!
+  state: String
+  country: String!
+  postalcode: String!
+}
+
+## NEW IN PHASE 2 ##
+type Reservation {
+  confirmationNumber: ID!
+  hotel: Hotel!
+  guest: String
+  startDate: AWSDate!
+  endDate: AWSDate!
+  rate: Int!
+}
+
+## NEW IN PHASE 2 ##
+input ReservationInput {
+  hotelId: ID!
+  ## NOTE: in real implementation, get this from identity context
+  guestId: ID!
+  startDate: AWSDate!
+  endDate: AWSDate!
+  rate: Int!
+}
+
+type Query {
+  listHotels(offset:Int, limit:Int): [Hotel]
+  getHotel(hotelId:ID!): Hotel
+  guestReservations(guestId: ID!): [Reservation] ## NEW IN PHASE 2 ##
+}
+
+## NEW IN PHASE 2 ##
+type Mutation {
+  createReservation(input: ReservationInput): Reservation
+  deleteReservation(confNum: ID!): Reservation
+}
+
+schema {
+  query: Query
+  mutation: Mutation ## NEW IN PHASE 2 ##
+}

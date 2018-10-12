@@ -1,0 +1,27 @@
+type Hotel {
+  hotelId: ID!
+  name: String!
+  location: String!
+  image: String
+  address: Address!
+  phoneNumber: AWSPhone!
+  category: Int!
+  amenities: [String]
+}
+
+type Address {
+  street: String!
+  city: String!
+  state: String
+  country: String!
+  postalcode: String!
+}
+
+type Query {
+  listHotels(offset:Int, limit:Int): [Hotel]
+  getHotel(hotelId:ID!): Hotel
+}
+
+schema {
+  query: Query
+}

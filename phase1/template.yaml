@@ -1,0 +1,168 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  mobXXX-appsync-rapid-development
+
+  Sample project for reInvent 2018 - MOBXXX - 0 to 60 with AWS AppSync -
+  Rapid Development Techniques for Mobile APIs
+    
+Globals:
+  Function:
+    Runtime: nodejs8.10
+    Timeout: 3
+
+Resources:
+  #
+  # AppSync API
+  #
+  ElastiLodgeApi:
+    Type: AWS::AppSync::GraphQLApi
+    Description: Sample GraphQL API for ElastiLodge demo
+    Properties:
+      AuthenticationType: API_KEY
+      Name: ElastiLodgeApi
+
+  ElastiLodgeApiKey:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      Description: API Key for ElastiLodge Api
+
+  ElastiLodgeSchema:
+    Type: AWS::AppSync::GraphQLSchema
+    DependsOn: ElastiLodgeApi
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      DefinitionS3Location: schema.graphql
+
+  ListHotelsQueryResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Query
+      FieldName: listHotels
+      DataSourceName: !GetAtt HotelsRestApiDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2018-05-29",
+          "method": "GET",
+          "resourcePath": "/Prod/hotels",
+          "params": {
+            "query": $util.toJson($ctx.args),
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          },
+        }
+      ResponseMappingTemplate: |
+        #if($ctx.result.statusCode == 200)
+          #set($resp = $utils.parseJson($ctx.result.body))
+          #set($result = [])
+          #foreach($hotel in $resp.hotels)
+            $util.qr($result.add({
+              "hotelId": $hotel['_id'],
+              "name": $hotel.name,
+              "location": $hotel.location,
+              "address": $hotel.address,
+              "image": $hotel.image,
+              "phoneNumber": $hotel.phoneNumber,
+              "categrory": $hotel.category,
+              "amenities": $hotel.amenities
+            }))
+          #end
+          $utils.toJson($result)
+        #else
+          $utils.appendError($ctx.result.body, $ctx.result.statusCode)
+        #end
+  
+  GetHotelQueryResolver:
+    Type: AWS::AppSync::Resolver
+    DependsOn: ElastiLodgeSchema
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      TypeName: Query
+      FieldName: getHotel
+      DataSourceName: !GetAtt HotelsRestApiDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2018-05-29",
+          "method": "GET",
+          "resourcePath": "/Prod/hotels/${ctx.args.hotelId}",
+          "params": {
+            "headers": {
+              "Content-Type": "application/json"
+            }
+          },
+        }
+      ResponseMappingTemplate: |
+        #if($ctx.result.statusCode == 200)
+          #set($resp = $utils.parseJson($ctx.result.body))
+          #set($result = {
+            "hotelId": $resp.hotel['_id'],
+            "name": $resp.hotel.name,
+            "location": $resp.hotel.location,
+            "image": $resp.hotel.image,
+            "address": $resp.hotel.address,
+            "phoneNumber": $resp.hotel.phoneNumber,
+            "categrory": $resp.hotel.category,
+            "amenities": $resp.hotel.amenities
+          })
+          $utils.toJson($result)
+        #else
+          $utils.appendError($ctx.result.body, $ctx.result.statusCode)
+        #end
+
+  #
+  # GraphQL Data Sources
+  #
+  HotelsRestApiDataSource:
+    Type: AWS::AppSync::DataSource
+    DependsOn: ServerlessRestApi
+    Properties:
+      ApiId: !GetAtt ElastiLodgeApi.ApiId
+      Name: ElastiLodge_hotels_rest_api
+      Description: ElastiLodge REST API data source
+      Type: HTTP
+      HttpConfig:
+        Endpoint: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com"
+
+  #
+  # "Legacy" API
+  #
+  ListHotels:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda/legacy/
+      Handler: app.list
+      Events:
+        ListHotels:
+          Type: Api
+          Properties:
+            Path: /hotels
+            Method: GET
+
+  GetHotel:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda/legacy/
+      Handler: app.get
+      Events:
+        GetHotel:
+          Type: Api
+          Properties:
+            Path: /hotels/{hotelId}
+            Method: GET
+
+Outputs:
+  LegacyApi:
+    Description: "Endpoint for sample legacy API"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hotels/"
+
+  ApiKey:
+    Description: "API Key for ElastiLodge API"
+    Value: !GetAtt ElastiLodgeApiKey.ApiKey
+  
+  GraphQLApi:
+    Description: "Endpoint for GraphQL"
+    Value: !GetAtt ElastiLodgeApi.GraphQLUrl
