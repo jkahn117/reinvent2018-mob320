@@ -1,7 +1,7 @@
 # AWS re:Invent 2018: MOB320
 ## 0 to 60 with AWS AppSync: Rapid Development Techniques for Mobile APIs
 
-This project acoompanies the AWS re:Invent 2018 Chalk Talk session of the same name.
+This project accompanies the AWS re:Invent 2018 Chalk Talk session of the same name.
 
 In this project, we "prototype" a mobile API using [AWS AppSync](https://aws.amazon.com/appsync/) to demonstrate the flexibility and benefits of AppSync and GraphQL for rapid development. Our prototype is in support of a new mobile app for ElastiLodge, a chain of boutique hotels. In conjunction with app design, our team will build the associated API across three phases of work:
 
@@ -11,13 +11,14 @@ In this project, we "prototype" a mobile API using [AWS AppSync](https://aws.ama
 
 ## Requirements
 
-* AWS CLI already configured with at least PowerUser permission.
-* [AWS SAM CLI](https://github.com/awslabs/aws-sam-cli).
-* Select a Region in which AWS AppSync is available.
+* [AWS CLI installed](https://docs.aws.amazon.com/cli/latest/userguide/installing.html) already configured with at least PowerUser permission.
+* [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
+  * If you run into problems, be sure to check that your Python user directory is included in the `PATH` (see AWS SAM CLI installation guide).
+* Select a Region in which AWS AppSync is available (N Virginia, Ohio, Oregon, Ireland, Frankfurt, Singapore, Tokyo, Sydney, Mumbai).
 
 ## Setup process
 
-We will use [AWS CloudFormation](https://aws.amazon.com/cloudformation/) to manage the AppSync resources in each phase of deployment (the [Serverless Application Model](https://github.com/awslabs/serverless-application-model) simplifies deployment of our REST APIs).
+We will use [AWS CloudFormation](https://aws.amazon.com/cloudformation/) to manage the AppSync resources in each phase of deployment (the [Serverless Application Model](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) simplifies deployment of our REST APIs).
 
 To get started, we need to create an Amazon S3 Bucket to upload our code assets. Select a unique name for your bucket and note it as we will need it again later (we'll refer to it as `MY_BUCKET_NAME`).
 
@@ -76,13 +77,13 @@ This query will return a result, such as:
         "name": "ElastiLodge Lake Marth",
         "location": "Lake Marth"
       },
-      ...
-    }
+      // ...
+    ]
   }
 }
 ```
 
-Try modifying your query to also include the phone number (`phoneNumber`) of each hotel.
+Try modifying your query to also include the `phoneNumber` of each hotel.
 
 We can also query for details related to a single hotel:
 
@@ -119,11 +120,11 @@ This will return a response such as:
 
 ### Phase 2
 
-In Phase 2, we will enhance our prototype web API by adding reservations. In a production environment, managing reservations is a far more complex concern that what is required in a prototype. While a production system must check availability, interact with payment gateways, and ensure compliance, a prototype primarily needs to persist data across sessions to provide the appearance of real.
+In Phase 2, we will enhance our prototype web API by adding reservations. In a production environment, managing reservations is a far more complex concern that what is required in a prototype. While a production system must check availability, interact with payment gateways, and ensure compliance, a prototype primarily needs to persist data across sessions to give the appearance of a real reservation.
 
 In our ElastiLodge prototype, we will use [Amazon DynamoDB](https://aws.amazon.com/dynamodb/) to persist reservation data. Our API will enable multiple guests to create, delete, and view reservations.
 
-> **NOTE** AWS AppSync makes it easy to add enterprise-class security via [Amazon Cognito](https://aws.amazon.com/cognito/); however, we will limit ourselves to a unique identifier per guest here to the purposes of brevity. While simpler than a full implementation, the approach of tying a unique guest identifier to each reservation is not all that different than a fully-functional model.
+> **NOTE** AWS AppSync makes it easy to add enterprise-class security via [Amazon Cognito](https://aws.amazon.com/cognito/); however, we will limit ourselves to a unique identifier per guest here to the purposes of brevity. While simpler than a full implementation, the approach of tying a unique guest identifier to each reservation is not all that different from a fully-functional model.
 
 Let's deploy Phase 2:
 
