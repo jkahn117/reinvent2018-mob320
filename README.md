@@ -1,5 +1,5 @@
 # AWS re:Invent 2018: MOB320
-## 0 to 60 with AWS AppSync: Rapid Development Techniques for Mobile APIs
+## 0 to 60 with AWS AppSync: Rapid Development Techniques for Mobile APIs
 
 This project accompanies the AWS re:Invent 2018 Chalk Talk session of the same name.
 
@@ -76,8 +76,7 @@ This query will return a result, such as:
       {
         "name": "ElastiLodge Lake Marth",
         "location": "Lake Marth"
-      },
-      // ...
+      }
     ]
   }
 }
