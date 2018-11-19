@@ -1,0 +1,18 @@
+[
+  {
+    "lodgeImage" : "https://s3.amazonaws.com/alexademo.ninja/demo/awsappsync/elastilodge/lodge.png",
+    "lodgeName" : "ElastiLodge South Africa",
+    "confirmation" : "TZEQXB",
+    "checkin" : "Nov 19th",
+    "checkout" : "Nov 25th 2018",
+    "duration" : "6"
+  },
+  {
+    "lodgeImage" : "https://s3.amazonaws.com/alexademo.ninja/demo/awsappsync/elastilodge/photo0.png",
+    "lodgeName" : "Hacienda Venecia",
+    "confirmation" : "MQH7TC",
+    "checkin" : "Jan 3rd",
+    "checkout" : "Jan 14th 2019",
+    "duration" : "6"
+  }
+]
