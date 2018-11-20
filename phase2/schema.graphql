@@ -21,7 +21,7 @@ type Address {
 type Reservation {
   confirmationNumber: ID!
   hotel: Hotel!
-  guest: String
+  guestId: ID!
   startDate: AWSDate!
   endDate: AWSDate!
   rate: Int!

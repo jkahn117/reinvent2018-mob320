@@ -280,6 +280,7 @@ Resources:
               - hotelId
               - confirmationNumber
               - endDate
+              - rate
             ProjectionType: INCLUDE
           ProvisionedThroughput:
             ReadCapacityUnits: 1
