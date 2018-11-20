@@ -7,11 +7,11 @@ projects:
       - ./amplify/**
     extensions:
       amplify:
-        graphQLApiId: dkowijql6baihcluf7xj6yuvsi
+        graphQLApiId: eenhx3rttvemhcqoc4oj6s5ktq
         codeGenTarget: swift
         generatedFileName: GeneratedAPI.swift
         docsFilePath: graphql
         region: eu-west-1
       endpoints:
         prod: >-
-          https://ng2csmhlmva4zf5upmq2k6abla.appsync-api.eu-west-1.amazonaws.com/graphql
+          https://sdg3eqqcm5bdlib6hqb6izdi5i.appsync-api.eu-west-1.amazonaws.com/graphql
