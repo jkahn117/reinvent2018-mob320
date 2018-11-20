@@ -14,7 +14,7 @@ type Address {
   city: String!
   state: String
   country: String!
-  postalcode: String!
+  zip: String!
 }
 
 type Query {
