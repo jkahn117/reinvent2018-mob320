@@ -170,7 +170,7 @@ Resources:
             "image": $resp.hotel.image,
             "address": $resp.hotel.address,
             "phoneNumber": $resp.hotel.phoneNumber,
-            "categrory": $resp.hotel.category,
+            "category": $resp.hotel.category,
             "amenities": $resp.hotel.amenities
           })
           $utils.toJson($result)
