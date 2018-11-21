@@ -55,7 +55,15 @@ type Mutation {
   deleteReservation(confNum: ID!): Reservation
 }
 
+type Subscription {
+	createReservationEvent(guestId: ID!): Reservation
+		@aws_subscribe(mutations: ["createReservation"])
+	deleteReservationEvent(guestId: ID!): Reservation
+		@aws_subscribe(mutations: ["deleteReservation"])
+}
+
 schema {
-  query: Query
-  mutation: Mutation
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
 }
