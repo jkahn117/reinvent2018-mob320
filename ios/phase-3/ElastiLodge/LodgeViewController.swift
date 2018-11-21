@@ -21,6 +21,7 @@ class LodgeViewController: UIViewController {
     @IBOutlet weak var map: MKMapView!
     @IBOutlet weak var bookNowButton: UIButton!
     @IBOutlet weak var amenities: UITextView!
+    @IBOutlet weak var rate: UILabel!
     
     private let app = UIApplication.shared.delegate as! AppDelegate
 
@@ -89,6 +90,9 @@ class LodgeViewController: UIViewController {
         }
         if let amenitiesValue = app.api.amenities {
             self.amenities.text = amenitiesValue
+        }
+        if let rateValue = app.api.rate, let rateCurrencyValue = app.api.rateCurrency {
+            self.rate.text = "\(rateCurrencyValue) \(rateValue)"
         }
     }
     

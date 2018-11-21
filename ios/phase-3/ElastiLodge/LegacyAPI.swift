@@ -163,4 +163,11 @@ class LegacyAPI : ElastiLodgeAPI{
     func bookingImageUrl(_ forBooking: [String:Any]) -> String? {
         return forBooking["lodgeImage"] as? String
     }
+    // not used in the legacy API - Phase3 only 
+    var rate : Int? {
+        return 0
+    }
+    var rateCurrency : String? {
+        return ""
+    }
 }

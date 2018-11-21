@@ -24,6 +24,8 @@ protocol ElastiLodgeAPI {
     func checkout(_ forBooking: [String:Any]) -> String?
     func bookingName(_ forBooking: [String:Any]) -> String?
     func bookingImageUrl(_ forBooking: [String:Any]) -> String?
+    var rate : Int? { get }
+    var rateCurrency : String? { get }
 }
 
 class APIAdapter : NSObject, ElastiLodgeAPI {
@@ -75,5 +77,11 @@ class APIAdapter : NSObject, ElastiLodgeAPI {
     }
     func bookingImageUrl(_ forBooking: [String:Any]) -> String? {
         return api.bookingImageUrl(forBooking)
+    }
+    var rate : Int? {
+        return api.rate
+    }
+    var rateCurrency : String? {
+        return api.rateCurrency
     }
 }
