@@ -82,7 +82,7 @@ class GraphQLAPI : ElastiLodgeAPI {
                     // Create a new object for the desired query, where the new object content should reside
                     var hotel = GuestReservationsQuery.Data.GuestReservation.Hotel(hotelId: nb.hotel.hotelId, name: nb.hotel.name, location: nb.hotel.location, phoneNumber: nb.hotel.phoneNumber, category: nb.hotel.category)
                     hotel.image = nb.hotel.image
-                    let bookingToAdd = GuestReservationsQuery.Data.GuestReservation(confirmationNumber: nb.confirmationNumber, hotel: hotel, guest: nb.guest, startDate: nb.startDate, endDate: nb.endDate, rate: nb.rate)
+                    let bookingToAdd = GuestReservationsQuery.Data.GuestReservation(confirmationNumber: nb.confirmationNumber, hotel: hotel, guestId: nb.guestId, startDate: nb.startDate, endDate: nb.endDate, rate: nb.rate)
 //                    do {
 //                        // Update the local store with the newly received data
 //                        try transaction?.update(query: GuestReservationsQuery(guestId: userId)) { (data: inout GuestReservationsQuery.Data) in

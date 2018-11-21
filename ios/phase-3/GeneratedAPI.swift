@@ -2,7 +2,6 @@
 
 import AWSAppSync
 
-/// # NEW IN PHASE 2 ##
 public struct ReservationInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
@@ -511,7 +510,7 @@ public final class DeleteReservationMutation: GraphQLMutation {
 
 public final class ListHotelsQuery: GraphQLQuery {
   public static let operationString =
-    "query ListHotels($offset: Int, $limit: Int) {\n  listHotels(offset: $offset, limit: $limit) {\n    __typename\n    hotelId\n    name\n    location\n    image\n    address {\n      __typename\n      street\n      city\n      state\n      country\n      zip\n    }\n    phoneNumber\n    category\n    amenities\n  }\n}"
+    "query ListHotels($offset: Int, $limit: Int) {\n  listHotels(offset: $offset, limit: $limit) {\n    __typename\n    hotelId\n    name\n    location\n    image\n    address {\n      __typename\n      street\n      city\n      state\n      country\n      zip\n    }\n    phoneNumber\n    category\n    amenities\n    rate {\n      __typename\n      hotelId\n      rate\n      currency\n      date\n    }\n  }\n}"
 
   public var offset: Int?
   public var limit: Int?
@@ -564,6 +563,7 @@ public final class ListHotelsQuery: GraphQLQuery {
         GraphQLField("phoneNumber", type: .nonNull(.scalar(String.self))),
         GraphQLField("category", type: .nonNull(.scalar(Int.self))),
         GraphQLField("amenities", type: .list(.scalar(String.self))),
+        GraphQLField("rate", type: .object(Rate.selections)),
       ]
 
       public var snapshot: Snapshot
@@ -572,8 +572,8 @@ public final class ListHotelsQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(hotelId: GraphQLID, name: String, location: String, image: String? = nil, address: Address, phoneNumber: String, category: Int, amenities: [String?]? = nil) {
-        self.init(snapshot: ["__typename": "Hotel", "hotelId": hotelId, "name": name, "location": location, "image": image, "address": address.snapshot, "phoneNumber": phoneNumber, "category": category, "amenities": amenities])
+      public init(hotelId: GraphQLID, name: String, location: String, image: String? = nil, address: Address, phoneNumber: String, category: Int, amenities: [String?]? = nil, rate: Rate? = nil) {
+        self.init(snapshot: ["__typename": "Hotel", "hotelId": hotelId, "name": name, "location": location, "image": image, "address": address.snapshot, "phoneNumber": phoneNumber, "category": category, "amenities": amenities, "rate": rate.flatMap { $0.snapshot }])
       }
 
       public var __typename: String {
@@ -657,6 +657,15 @@ public final class ListHotelsQuery: GraphQLQuery {
         }
       }
 
+      public var rate: Rate? {
+        get {
+          return (snapshot["rate"] as? Snapshot).flatMap { Rate(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "rate")
+        }
+      }
+
       public struct Address: GraphQLSelectionSet {
         public static let possibleTypes = ["Address"]
 
@@ -733,13 +742,80 @@ public final class ListHotelsQuery: GraphQLQuery {
           }
         }
       }
+
+      public struct Rate: GraphQLSelectionSet {
+        public static let possibleTypes = ["Rate"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hotelId", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("rate", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("currency", type: .nonNull(.scalar(String.self))),
+          GraphQLField("date", type: .scalar(String.self)),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(hotelId: GraphQLID, rate: Int, currency: String, date: String? = nil) {
+          self.init(snapshot: ["__typename": "Rate", "hotelId": hotelId, "rate": rate, "currency": currency, "date": date])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var hotelId: GraphQLID {
+          get {
+            return snapshot["hotelId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hotelId")
+          }
+        }
+
+        public var rate: Int {
+          get {
+            return snapshot["rate"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "rate")
+          }
+        }
+
+        public var currency: String {
+          get {
+            return snapshot["currency"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "currency")
+          }
+        }
+
+        public var date: String? {
+          get {
+            return snapshot["date"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "date")
+          }
+        }
+      }
     }
   }
 }
 
 public final class GetHotelQuery: GraphQLQuery {
   public static let operationString =
-    "query GetHotel($hotelId: ID!) {\n  getHotel(hotelId: $hotelId) {\n    __typename\n    hotelId\n    name\n    location\n    image\n    address {\n      __typename\n      street\n      city\n      state\n      country\n      zip\n    }\n    phoneNumber\n    category\n    amenities\n  }\n}"
+    "query GetHotel($hotelId: ID!) {\n  getHotel(hotelId: $hotelId) {\n    __typename\n    hotelId\n    name\n    location\n    image\n    address {\n      __typename\n      street\n      city\n      state\n      country\n      zip\n    }\n    phoneNumber\n    category\n    amenities\n    rate {\n      __typename\n      hotelId\n      rate\n      currency\n      date\n    }\n  }\n}"
 
   public var hotelId: GraphQLID
 
@@ -790,6 +866,7 @@ public final class GetHotelQuery: GraphQLQuery {
         GraphQLField("phoneNumber", type: .nonNull(.scalar(String.self))),
         GraphQLField("category", type: .nonNull(.scalar(Int.self))),
         GraphQLField("amenities", type: .list(.scalar(String.self))),
+        GraphQLField("rate", type: .object(Rate.selections)),
       ]
 
       public var snapshot: Snapshot
@@ -798,8 +875,8 @@ public final class GetHotelQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(hotelId: GraphQLID, name: String, location: String, image: String? = nil, address: Address, phoneNumber: String, category: Int, amenities: [String?]? = nil) {
-        self.init(snapshot: ["__typename": "Hotel", "hotelId": hotelId, "name": name, "location": location, "image": image, "address": address.snapshot, "phoneNumber": phoneNumber, "category": category, "amenities": amenities])
+      public init(hotelId: GraphQLID, name: String, location: String, image: String? = nil, address: Address, phoneNumber: String, category: Int, amenities: [String?]? = nil, rate: Rate? = nil) {
+        self.init(snapshot: ["__typename": "Hotel", "hotelId": hotelId, "name": name, "location": location, "image": image, "address": address.snapshot, "phoneNumber": phoneNumber, "category": category, "amenities": amenities, "rate": rate.flatMap { $0.snapshot }])
       }
 
       public var __typename: String {
@@ -883,6 +960,15 @@ public final class GetHotelQuery: GraphQLQuery {
         }
       }
 
+      public var rate: Rate? {
+        get {
+          return (snapshot["rate"] as? Snapshot).flatMap { Rate(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "rate")
+        }
+      }
+
       public struct Address: GraphQLSelectionSet {
         public static let possibleTypes = ["Address"]
 
@@ -956,6 +1042,73 @@ public final class GetHotelQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "zip")
+          }
+        }
+      }
+
+      public struct Rate: GraphQLSelectionSet {
+        public static let possibleTypes = ["Rate"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hotelId", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("rate", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("currency", type: .nonNull(.scalar(String.self))),
+          GraphQLField("date", type: .scalar(String.self)),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(hotelId: GraphQLID, rate: Int, currency: String, date: String? = nil) {
+          self.init(snapshot: ["__typename": "Rate", "hotelId": hotelId, "rate": rate, "currency": currency, "date": date])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var hotelId: GraphQLID {
+          get {
+            return snapshot["hotelId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hotelId")
+          }
+        }
+
+        public var rate: Int {
+          get {
+            return snapshot["rate"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "rate")
+          }
+        }
+
+        public var currency: String {
+          get {
+            return snapshot["currency"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "currency")
+          }
+        }
+
+        public var date: String? {
+          get {
+            return snapshot["date"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "date")
           }
         }
       }
