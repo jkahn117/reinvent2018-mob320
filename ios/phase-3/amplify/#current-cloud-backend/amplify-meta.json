@@ -1,0 +1,26 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "phase3-20181121100335-authRole",
+      "UnauthRoleArn": "arn:aws:iam::486652066693:role/phase3-20181121100335-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::486652066693:role/phase3-20181121100335-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "phase3-20181121100335-deployment",
+      "UnauthRoleName": "phase3-20181121100335-unauthRole",
+      "StackName": "phase3-20181121100335",
+      "StackId": "arn:aws:cloudformation:eu-west-1:486652066693:stack/phase3-20181121100335/b6bdee50-ed74-11e8-8f48-50a686333cfd"
+    }
+  },
+  "api": {
+    "ElastiLodgeApi": {
+      "service": "AppSync",
+      "output": {
+        "securityType": "API_KEY",
+        "GraphQLAPIIdOutput": "eenhx3rttvemhcqoc4oj6s5ktq",
+        "GraphQLAPIEndpointOutput": "https://sdg3eqqcm5bdlib6hqb6izdi5i.appsync-api.eu-west-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-6h4mwg536vezbof7heapsqqq5e"
+      },
+      "lastPushTimeStamp": "2018-11-21T10:04:53.215Z"
+    }
+  }
+}
