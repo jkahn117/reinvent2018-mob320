@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  mobXXX-appsync-rapid-development
+  reinvent2018-mob320-appsync-rapid-development
 
-  Sample project for reInvent 2018 - MOBXXX - 0 to 60 with AWS AppSync -
+  Sample project for reInvent 2018 - MOB320 - 0 to 60 with AWS AppSync -
   Rapid Development Techniques for Mobile APIs
     
 Globals:
