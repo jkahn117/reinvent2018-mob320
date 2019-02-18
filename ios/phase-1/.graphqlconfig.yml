@@ -1,0 +1,17 @@
+projects:
+  ElastiLodgeApi:
+    schemaPath: graphql/schema.json
+    includes:
+      - graphql/**/*.graphql
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        graphQLApiId: cobfjfdyirgkvcnvv5ljoaidtu
+        codeGenTarget: swift
+        generatedFileName: API.swift
+        docsFilePath: graphql
+        region: eu-west-1
+      endpoints:
+        prod: >-
+          https://msn4uaxzd5cvlkyhvloakfj74y.appsync-api.eu-west-1.amazonaws.com/graphql
