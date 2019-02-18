@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1010"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "86F7CA6DE652E87AF34C17E5ACD6AB59"
+               BlueprintIdentifier = "3DF799DE17B4BB827082159CD4040E01"
                BuildableName = "Pods_ElastiLodge.framework"
                BlueprintName = "Pods-ElastiLodge"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "86F7CA6DE652E87AF34C17E5ACD6AB59"
+            BlueprintIdentifier = "3DF799DE17B4BB827082159CD4040E01"
             BuildableName = "Pods_ElastiLodge.framework"
             BlueprintName = "Pods-ElastiLodge"
             ReferencedContainer = "container:Pods.xcodeproj">

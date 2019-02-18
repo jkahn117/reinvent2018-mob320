@@ -16,13 +16,16 @@ class GraphQLAPI : ElastiLodgeAPI {
     private var hotelDetails : GetHotelQuery.Data.GetHotel?
     
     init(hotelId: String) {
-        //You can choose your database location
-        let databaseURL = URL(fileURLWithPath:NSTemporaryDirectory()).appendingPathComponent("elastilodge")
         
         do {
+            let cacheConfiguration = try AWSAppSyncCacheConfiguration()
+            let appSyncServiceConfig = try AWSAppSyncServiceConfig()
+            let appSyncConfig = try AWSAppSyncClientConfiguration(appSyncServiceConfig: appSyncServiceConfig,
+                                                                  cacheConfiguration: cacheConfiguration)
+
             //AppSync configuration & client initialization
-            let appSyncConfig = try AWSAppSyncClientConfiguration(appSyncClientInfo: AWSAppSyncClientInfo(),databaseURL: databaseURL)
             appSyncClient = try AWSAppSyncClient(appSyncConfig: appSyncConfig)
+
             // Set id as the cache key for objects. See architecture section for details
             appSyncClient?.apolloClient?.cacheKeyForObject = { $0["_id"] }
         } catch {

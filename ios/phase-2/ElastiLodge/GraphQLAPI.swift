@@ -18,13 +18,16 @@ class GraphQLAPI : ElastiLodgeAPI {
     private var newReservationSubscription : Cancellable?
     
     init(hotelId: String, userId: String) {
-        //You can choose your database location
-        let databaseURL = URL(fileURLWithPath:NSTemporaryDirectory()).appendingPathComponent("elastilodge")
         
         do {
+            let cacheConfiguration = try AWSAppSyncCacheConfiguration()
+            let appSyncServiceConfig = try AWSAppSyncServiceConfig()
+            let appSyncConfig = try AWSAppSyncClientConfiguration(appSyncServiceConfig: appSyncServiceConfig,
+                                                                  cacheConfiguration: cacheConfiguration)
+            
             //AppSync configuration & client initialization
-            let appSyncConfig = try AWSAppSyncClientConfiguration(appSyncClientInfo: AWSAppSyncClientInfo(),databaseURL: databaseURL)
             appSyncClient = try AWSAppSyncClient(appSyncConfig: appSyncConfig)
+
             // Set id as the cache key for objects. See architecture section for details
             appSyncClient?.apolloClient?.cacheKeyForObject = { $0["_id"] }
         } catch {
@@ -64,7 +67,7 @@ class GraphQLAPI : ElastiLodgeAPI {
         
         // register to be notified on reservation change (mutation subscription)
         do {
-            print("Subscribing to Create Reservation Event")
+            print("Subscribing to Create Reservation Event for customer \(userId)")
 //            let sub = CreateReservationEventSubscription(guestId: userId)
             let sub = CreateReservationEventSubscription(guestId: userId)
             newReservationSubscription = try appSyncClient?.subscribe(subscription: sub, resultHandler: { (result, transaction, error) in
@@ -80,7 +83,8 @@ class GraphQLAPI : ElastiLodgeAPI {
                 // store reference to the new booking
                 if let nb = r.data?.createReservationEvent {
                     // Create a new object for the desired query, where the new object content should reside
-                    var hotel = GuestReservationsQuery.Data.GuestReservation.Hotel(hotelId: nb.hotel.hotelId, name: nb.hotel.name, location: nb.hotel.location, phoneNumber: nb.hotel.phoneNumber, category: nb.hotel.category)
+                    let address = GuestReservationsQuery.Data.GuestReservation.Hotel.Address(street: nb.hotel.address.street, city: nb.hotel.address.country, country:nb.hotel.address.country, zip: nb.hotel.address.zip)
+                    var hotel = GuestReservationsQuery.Data.GuestReservation.Hotel(hotelId: nb.hotel.hotelId, name: nb.hotel.name, location: nb.hotel.location, address: address, phoneNumber: nb.hotel.phoneNumber, category: nb.hotel.category)
                     hotel.image = nb.hotel.image
                     let bookingToAdd = GuestReservationsQuery.Data.GuestReservation(confirmationNumber: nb.confirmationNumber, hotel: hotel, guestId: nb.guestId, startDate: nb.startDate, endDate: nb.endDate, rate: nb.rate)
 //                    do {

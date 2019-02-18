@@ -7,9 +7,22 @@ mutation CreateReservation($input: ReservationInput) {
       name
       location
       image
+      address {
+        street
+        city
+        state
+        country
+        zip
+      }
       phoneNumber
       category
       amenities
+      rate {
+        hotelId
+        rate
+        currency
+        date
+      }
     }
     guestId
     startDate
@@ -25,9 +38,22 @@ mutation DeleteReservation($confNum: ID!) {
       name
       location
       image
+      address {
+        street
+        city
+        state
+        country
+        zip
+      }
       phoneNumber
       category
       amenities
+      rate {
+        hotelId
+        rate
+        currency
+        date
+      }
     }
     guestId
     startDate

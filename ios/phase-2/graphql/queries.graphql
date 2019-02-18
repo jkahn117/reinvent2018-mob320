@@ -15,6 +15,12 @@ query ListHotels($offset: Int, $limit: Int) {
     phoneNumber
     category
     amenities
+    rate {
+      hotelId
+      rate
+      currency
+      date
+    }
   }
 }
 query GetHotel($hotelId: ID!) {
@@ -33,6 +39,12 @@ query GetHotel($hotelId: ID!) {
     phoneNumber
     category
     amenities
+    rate {
+      hotelId
+      rate
+      currency
+      date
+    }
   }
 }
 query GuestReservations($guestId: ID!) {
@@ -43,9 +55,22 @@ query GuestReservations($guestId: ID!) {
       name
       location
       image
+      address {
+        street
+        city
+        state
+        country
+        zip
+      }
       phoneNumber
       category
       amenities
+      rate {
+        hotelId
+        rate
+        currency
+        date
+      }
     }
     guestId
     startDate

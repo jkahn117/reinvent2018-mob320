@@ -55,9 +55,22 @@ query GuestReservations($guestId: ID!) {
       name
       location
       image
+      address {
+        street
+        city
+        state
+        country
+        zip
+      }
       phoneNumber
       category
       amenities
+      rate {
+        hotelId
+        rate
+        currency
+        date
+      }
     }
     guestId
     startDate

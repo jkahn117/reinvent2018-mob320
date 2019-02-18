@@ -6,8 +6,8 @@ target 'ElastiLodge' do
   use_frameworks!
 
   # Pods for ElastiLodge
-  pod 'AWSCore', '2.7.3'
-  pod 'AWSAppSync', '2.6.24'
+  pod 'AWSCore'
+  pod 'AWSAppSync'
 end
 
 

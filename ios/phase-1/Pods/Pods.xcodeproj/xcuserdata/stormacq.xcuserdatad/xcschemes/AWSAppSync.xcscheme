@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AD88E7A9EC3DF0E039F7B91C0026BDF2"
+               BlueprintIdentifier = "FD4B4A008798E481F05EE1D6EA5DF860"
                BlueprintName = "AWSAppSync"
                ReferencedContainer = "container:Pods.xcodeproj"
                BuildableName = "AWSAppSync.framework">

@@ -7,9 +7,22 @@ subscription CreateReservationEvent($guestId: ID!) {
       name
       location
       image
+      address {
+        street
+        city
+        state
+        country
+        zip
+      }
       phoneNumber
       category
       amenities
+      rate {
+        hotelId
+        rate
+        currency
+        date
+      }
     }
     guestId
     startDate
@@ -25,9 +38,22 @@ subscription DeleteReservationEvent($guestId: ID!) {
       name
       location
       image
+      address {
+        street
+        city
+        state
+        country
+        zip
+      }
       phoneNumber
       category
       amenities
+      rate {
+        hotelId
+        rate
+        currency
+        date
+      }
     }
     guestId
     startDate

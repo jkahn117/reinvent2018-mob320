@@ -1,7 +1,7 @@
 {
     "projectName": "phase1",
-    "projectPath": "/Users/stormacq/Documents/amazon/code/aws appsync/reinvent2018-mob320/ios/phase-1",
-    "defaultEditor": "atom",
+    "projectPath": "/Users/stormacq/Documents/amazon/code/appsync/reinvent2018-mob320/ios/phase-1",
+    "defaultEditor": "code",
     "frontendHandler": {
         "ios": "/usr/local/lib/node_modules/@aws-amplify/cli/node_modules/amplify-frontend-ios"
     },

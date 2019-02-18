@@ -43,23 +43,28 @@ query GuestReservations {
 
 mutation CreateReservation {
   createReservation(input: {
-    hotelId: 3
-    guestId: 1
-    startDate: "2019-02-04"
-    endDate: "2019-02-10"
-    rate: 150
+    hotelId: 2,
+    guestId: 1,
+    startDate: "2019-03-01",
+    endDate: "2018-03-03",
+    rate: 100
   }) {
     confirmationNumber
+    guestId
     hotel {
       hotelId
+      phoneNumber
       name
       location
+      address {
+        street
+        city
+        country
+        zip
+      }
       image
-      phoneNumber
       category
-      amenities
     }
-    guestId
     startDate
     endDate
     rate
