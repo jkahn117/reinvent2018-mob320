@@ -80,7 +80,9 @@ Pod installation complete! There are 2 dependencies from the Podfile and 4 total
 $ open ElastiLodge.xcworkspace
 ```
 
-Build and Run ... it should work :-)
+Build and Run ... it should work :-) Here is a screenshot of the app
+
+![phase 3 screenshot](ios/screenshot-phase3.png)
 
 ### Update the API 
 
