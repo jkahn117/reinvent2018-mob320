@@ -3,6 +3,9 @@ fake
 Makefile
 
 # iOS
+ios/doc 
+ios/examples
+ios/graphics
 Pods/
 Pods
 **/Pods/**

@@ -13,7 +13,7 @@ In this project, we "prototype" a mobile API using [AWS AppSync](https://aws.ama
 
 * [AWS CLI installed](https://docs.aws.amazon.com/cli/latest/userguide/installing.html) already configured with at least PowerUser permission.
 * [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
-  * If you run into problems, be sure to check that your Python user directory is included in the `PATH` (see AWS SAM CLI installation guide).
+* If you run into problems, be sure to check that your Python user directory is included in the `PATH` (see AWS SAM CLI installation guide).
 * Select a Region in which AWS AppSync is available (N Virginia, Ohio, Oregon, Ireland, Frankfurt, Singapore, Tokyo, Sydney, Mumbai).
 
 ## Setup process
