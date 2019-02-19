@@ -1836,11 +1836,11 @@ public final class GuestReservationsQuery: GraphQLQuery {
 
 public final class CreateReservationEventSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription CreateReservationEvent($guestId: ID!) {\n  createReservationEvent(guestId: $guestId) {\n    __typename\n    confirmationNumber\n    hotel {\n      __typename\n      hotelId\n      name\n      location\n      image\n      address {\n        __typename\n        street\n        city\n        state\n        country\n        zip\n      }\n      phoneNumber\n      category\n      amenities\n      rate {\n        __typename\n        hotelId\n        rate\n        currency\n        date\n      }\n    }\n    guestId\n    startDate\n    endDate\n    rate\n  }\n}"
+    "subscription CreateReservationEvent($guestId: ID) {\n  createReservationEvent(guestId: $guestId) {\n    __typename\n    confirmationNumber\n    hotel {\n      __typename\n      hotelId\n      name\n      location\n      image\n      address {\n        __typename\n        street\n        city\n        state\n        country\n        zip\n      }\n      phoneNumber\n      category\n      amenities\n      rate {\n        __typename\n        hotelId\n        rate\n        currency\n        date\n      }\n    }\n    guestId\n    startDate\n    endDate\n    rate\n  }\n}"
 
-  public var guestId: GraphQLID
+  public var guestId: GraphQLID?
 
-  public init(guestId: GraphQLID) {
+  public init(guestId: GraphQLID? = nil) {
     self.guestId = guestId
   }
 
@@ -2226,11 +2226,11 @@ public final class CreateReservationEventSubscription: GraphQLSubscription {
 
 public final class DeleteReservationEventSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription DeleteReservationEvent($guestId: ID!) {\n  deleteReservationEvent(guestId: $guestId) {\n    __typename\n    confirmationNumber\n    hotel {\n      __typename\n      hotelId\n      name\n      location\n      image\n      address {\n        __typename\n        street\n        city\n        state\n        country\n        zip\n      }\n      phoneNumber\n      category\n      amenities\n      rate {\n        __typename\n        hotelId\n        rate\n        currency\n        date\n      }\n    }\n    guestId\n    startDate\n    endDate\n    rate\n  }\n}"
+    "subscription DeleteReservationEvent($guestId: ID) {\n  deleteReservationEvent(guestId: $guestId) {\n    __typename\n    confirmationNumber\n    hotel {\n      __typename\n      hotelId\n      name\n      location\n      image\n      address {\n        __typename\n        street\n        city\n        state\n        country\n        zip\n      }\n      phoneNumber\n      category\n      amenities\n      rate {\n        __typename\n        hotelId\n        rate\n        currency\n        date\n      }\n    }\n    guestId\n    startDate\n    endDate\n    rate\n  }\n}"
 
-  public var guestId: GraphQLID
+  public var guestId: GraphQLID?
 
-  public init(guestId: GraphQLID) {
+  public init(guestId: GraphQLID? = nil) {
     self.guestId = guestId
   }
 

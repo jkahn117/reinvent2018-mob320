@@ -1,18 +1,24 @@
-packaged.yaml
-fake
-Makefile
-
-# iOS
+# my project tests 
 ios/doc 
 ios/examples
 ios/graphics
-Pods/
-Pods
-**/Pods/**
+ios/legacy
+ios/prototype
+
+# iOS
+ios/**/Pods/
+ios/**/*.xcuserstate
+
 
 # Amplify 
-**/.amplifyrc
-**/amplify
+ios/**/.amplifyrc
+ios/**/amplify
+ios/**/.graphqlconfig.yml
+ios/**/awsconfiguration.json
+ios/**/graphql/**
+
+# SAM 
+packaged.yaml
 
 # Linux 
 *~
