@@ -1,6 +1,0 @@
-framework module AWSAppSync {
-  umbrella header "AWSAppSync-umbrella.h"
-
-  export *
-  module * { export * }
-}
