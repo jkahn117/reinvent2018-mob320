@@ -1,8 +1,26 @@
-packaged.yaml
-fake
-Makefile
+# my project tests 
+ios/doc 
+ios/examples
+ios/graphics
+ios/legacy
+ios/prototype
 
-### Linux ###
+# iOS
+ios/**/Pods/
+ios/**/*.xcuserstate
+
+
+# Amplify 
+ios/**/.amplifyrc
+ios/**/amplify
+ios/**/.graphqlconfig.yml
+ios/**/awsconfiguration.json
+ios/**/graphql/**
+
+# SAM 
+packaged.yaml
+
+# Linux 
 *~
 
 # Logs
@@ -22,10 +40,10 @@ jspm_packages/
 # dotenv environment variables file
 .env
 
-### OSX ###
+# OSX 
 *.DS_Store
 
-### Windows ###
+# Windows
 # Windows thumbnail cache files
 Thumbs.db
 ehthumbs.db

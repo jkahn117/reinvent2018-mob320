@@ -1,0 +1,72 @@
+query GetHotel {
+  getHotel(hotelId: 3) {
+    hotelId
+    name
+    location
+    image
+    address {
+      street
+      city
+      state
+      country
+      zip
+    }
+    phoneNumber
+    category
+    amenities
+    rate {
+      hotelId
+      rate
+      currency
+      date
+    }
+  }
+}
+query GuestReservations {
+  guestReservations(guestId: 1) {
+    confirmationNumber
+    hotel {
+      hotelId
+      name
+      location
+      image
+      phoneNumber
+      category
+      amenities
+    }
+    guestId
+    startDate
+    endDate
+    rate
+  }
+}
+
+mutation CreateReservation {
+  createReservation(input: {
+    hotelId: 2,
+    guestId: 1,
+    startDate: "2019-03-01",
+    endDate: "2018-03-03",
+    rate: 100
+  }) {
+    confirmationNumber
+    guestId
+    hotel {
+      hotelId
+      phoneNumber
+      name
+      location
+      address {
+        street
+        city
+        country
+        zip
+      }
+      image
+      category
+    }
+    startDate
+    endDate
+    rate
+  }
+}
