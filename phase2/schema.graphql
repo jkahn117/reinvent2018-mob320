@@ -14,14 +14,14 @@ type Address {
   city: String!
   state: String
   country: String!
-  postalcode: String!
+  zip: String!
 }
 
 ## NEW IN PHASE 2 ##
 type Reservation {
   confirmationNumber: ID!
   hotel: Hotel!
-  guest: String
+  guestId: ID!
   startDate: AWSDate!
   endDate: AWSDate!
   rate: Int!
@@ -49,7 +49,15 @@ type Mutation {
   deleteReservation(confNum: ID!): Reservation
 }
 
+type Subscription {
+	createReservationEvent(guestId: ID!): Reservation
+		@aws_subscribe(mutations: ["createReservation"])
+	deleteReservationEvent(guestId: ID!): Reservation
+		@aws_subscribe(mutations: ["deleteReservation"])
+}
+
 schema {
-  query: Query
-  mutation: Mutation ## NEW IN PHASE 2 ##
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
 }

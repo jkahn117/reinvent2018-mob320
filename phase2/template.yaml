@@ -5,7 +5,7 @@ Description: >
 
   Sample project for reInvent 2018 - MOB320 - 0 to 60 with AWS AppSync -
   Rapid Development Techniques for Mobile APIs
-    
+
 Globals:
   Function:
     Runtime: nodejs8.10
@@ -67,7 +67,7 @@ Resources:
               "image": $hotel.image,
               "address": $hotel.address,
               "phoneNumber": $hotel.phoneNumber,
-              "categrory": $hotel.category,
+              "category": $hotel.category,
               "amenities": $hotel.amenities
             }))
           #end
@@ -75,7 +75,7 @@ Resources:
         #else
           $utils.appendError($ctx.result.body, $ctx.result.statusCode)
         #end
-  
+
   GetHotelQueryResolver:
     Type: AWS::AppSync::Resolver
     DependsOn: ElastiLodgeSchema
@@ -105,7 +105,7 @@ Resources:
             "image": $resp.hotel.image,
             "address": $resp.hotel.address,
             "phoneNumber": $resp.hotel.phoneNumber,
-            "categrory": $resp.hotel.category,
+            "category": $resp.hotel.category,
             "amenities": $resp.hotel.amenities
           })
           $utils.toJson($result)
@@ -170,7 +170,7 @@ Resources:
             "image": $resp.hotel.image,
             "address": $resp.hotel.address,
             "phoneNumber": $resp.hotel.phoneNumber,
-            "categrory": $resp.hotel.category,
+            "category": $resp.hotel.category,
             "amenities": $resp.hotel.amenities
           })
           $utils.toJson($result)
@@ -220,7 +220,7 @@ Resources:
         }
       ResponseMappingTemplate: |
         $util.toJson($ctx.result)
-  
+
   #
   # GraphQL Data Sources
   #
@@ -280,6 +280,7 @@ Resources:
               - hotelId
               - confirmationNumber
               - endDate
+              - rate
             ProjectionType: INCLUDE
           ProvisionedThroughput:
             ReadCapacityUnits: 1
@@ -352,7 +353,7 @@ Outputs:
   ApiKey:
     Description: "API Key for ElastiLodge API"
     Value: !GetAtt ElastiLodgeApiKey.ApiKey
-  
+
   GraphQLApi:
     Description: "Endpoint for GraphQL"
     Value: !GetAtt ElastiLodgeApi.GraphQLUrl
